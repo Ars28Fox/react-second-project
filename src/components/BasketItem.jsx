@@ -1,14 +1,23 @@
 function BasketItem(props) {
-  const { id, name, price, quantity } = props;
+  const {
+    id,
+    name,
+    price,
+    quantity,
+    removeFromBasket = Function.prototype,
+    incQuantity = Function.prototype,
+    decQuantity = Function.prototype,
+  } = props;
 
   return (
     <li className="collection-item">
-      {name} x {quantity} = {price}
-      <span className="secondary-content">
+      {name} <i className="material-icons basket-quanity" onClick={() => decQuantity(id)}>remove</i> x {quantity}{" "}
+      <i className="material-icons basket-quanity" onClick={() => incQuantity(id)}>add</i> = {price * quantity} руб.
+      <span className="secondary-content" onClick={() => removeFromBasket(id)}>
         <i className="material-icons basket-delete">close</i>
       </span>
     </li>
   );
 }
 
-export {BasketItem}
+export { BasketItem };

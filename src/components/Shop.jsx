@@ -4,12 +4,14 @@ import { Preloader } from "./Preloader";
 import { GoodsList } from "./GoodsList";
 import { Cart } from "./Cart";
 import { BasketList } from "./BasketList";
+import { Alert } from "./Alert";
 
 function Shop() {
   const [goods, setGoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState([]);
   const [isBasketShow, setBasketShow] = useState(false);
+  const [alertName, setAlertName] = useState('');
 
   const addToBasket = (item) => {
     const itemIndex = order.findIndex((orderItem) => orderItem.id === item.id);
@@ -33,11 +35,51 @@ function Shop() {
 
       setOrder(newOrder);
     }
+    setAlertName(item.name);
+  };
+
+  const removeFromBasket = (itemId) => {
+    const newOrder = order.filter((elem) => elem.id !== itemId);
+    setOrder(newOrder);
+  };
+
+  const incQuantity = (itemId) => {
+    const newOrder = order.map((elem) => {
+      if (elem.id === itemId) {
+        const newQuantity = elem.quantity + 1;
+        return {
+          ...elem,
+          quantity: newQuantity,
+        };
+      } else {
+        return elem;
+      }
+    });
+    setOrder(newOrder);
+  };
+
+  const decQuantity = (itemId) => {
+    const newOrder = order.map((elem) => {
+      if (elem.id === itemId) {
+        const newQuantity = elem.quantity - 1;
+        return {
+          ...elem,
+          quantity: newQuantity >= 0 ? newQuantity : 0,
+        };
+      } else {
+        return elem;
+      }
+    });
+    setOrder(newOrder);
   };
 
   const handleBasketShow = () => {
     setBasketShow(!isBasketShow);
   };
+
+  const closeAlert = () => {
+    setAlertName('');
+  }
 
   useEffect(function getGoods() {
     fetch(API_URL, {
@@ -60,8 +102,17 @@ function Shop() {
       ) : (
         <GoodsList goods={goods} addToBasket={addToBasket} />
       )}
+      {isBasketShow && (
+        <BasketList
+          order={order}
+          handleBasketShow={handleBasketShow}
+          removeFromBasket={removeFromBasket}
+          incQuantity={incQuantity}
+          decQuantity={decQuantity}
+        />
+      )}
       {
-        isBasketShow && <BasketList order={order} handleBasketShow={handleBasketShow}/>
+        alertName && <Alert name={alertName} closeAlert={closeAlert}/>
       }
     </main>
   );
