@@ -1,6 +1,6 @@
 {
   "name": "react-second-project",
-  "home": "https://ars28fox.github.io/react-second-project",
+  "homepage": "https://ars28fox.github.io/react-second-project",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
